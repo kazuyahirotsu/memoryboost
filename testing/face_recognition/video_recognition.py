@@ -13,9 +13,9 @@ import os
 # specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
 
 # Get a reference to webcam #0 (the default one)
-# video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(0)
 
-video_capture = cv2.VideoCapture("../videos/linus_moving.mp4")
+# video_capture = cv2.VideoCapture("../videos/linus_moving.mp4")
 
 # # Load a sample picture and learn how to recognize it.
 # linus_image = face_recognition.load_image_file("images/linus.jpg")

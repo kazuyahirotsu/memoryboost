@@ -17,7 +17,7 @@ count = 1
 
 def saveImage(img, userName, userId, imgId):
     Path("dataset/{}".format(userName)).mkdir(parents=True, exist_ok=True)
-    cv2,imwrite("dataset/{}/{}_{}.jpg".format(userName, userId, imgId), img)
+    cv2.imwrite("dataset/{}/{}_{}.jpg".format(userName, userId, imgId), img)
 
 while True:
     _, img = vc.read()
