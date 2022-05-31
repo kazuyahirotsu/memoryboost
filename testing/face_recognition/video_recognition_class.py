@@ -101,6 +101,7 @@ class VideoRecognition:
     
     def learn_new_face(self, img):
         cv2.imshow('learning new face', img)
+        cv2.waitKey(1)
         print("who is this: ")
         name = input()
         cv2.imwrite("images/{}.jpg".format(name), img)
