@@ -94,25 +94,31 @@ class VideoRecognition:
                 self.learn_new_face(original_frame)
             elif key == ord('q'):
                 break
-
+    
+    def stop(self):
         # Release handle to the webcam
         self.video_capture.release()
         cv2.destroyAllWindows()
-    
+
     def learn_new_face(self, img):
         cv2.imshow('learning new face', img)
         cv2.waitKey(1)
-        print("who is this: ")
+        print("who is this (type q to abort): ")
         name = input()
-        cv2.imwrite("images/{}.jpg".format(name), img)
-        cv2.destroyWindow('learning new face')
-        self.load_faces()
+        if name == "q":
+            cv2.destroyWindow('learning new face')
+            print("learning new face aborted")
+        else:
+            cv2.imwrite("images/{}.jpg".format(name), img)
+            cv2.destroyWindow('learning new face')
+            self.load_faces()
     
 
 def main():
     videoRecognition = VideoRecognition(0, 4)
     videoRecognition.load_faces()
     videoRecognition.process()
+    videoRecognition.stop()
 
 if __name__ == "__main__":
     main()
