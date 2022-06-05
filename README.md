@@ -19,3 +19,7 @@ todo: get images from firebase, upload video to firebase
 ### `speechRecognition_firestore.py`
 1. recognize speech in jp
 2. record the timestamp of each recognized words on firestore
+
+
+### `webapp`
+just shows known face names
