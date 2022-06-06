@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { firebaseConfig } from './firebaseConfig';
+import { Link } from "react-router-dom";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 
 
 function Faces() {
@@ -29,7 +30,6 @@ function Faces() {
     getFaces();
   },[])
 
-  // todo: clicking on names brings timestamp of their appearance(goes their page)
   return (
     <div className="Faces">
         <div className='text-center'>
@@ -37,7 +37,9 @@ function Faces() {
             <p>{console.log(faces)}</p>
             <div className='flex flex-col items-center'>
                 {faces?.map((face,idx) => 
-                <button className="btn w-1/6 my-1" key={idx}>{face}</button>
+                <button className="btn w-1/6 my-1" key={idx}>
+                  <Link className="link" to={"/"+face} >{face}</Link>
+                </button>
                 )}
             </div>
         </div>
