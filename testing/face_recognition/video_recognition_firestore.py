@@ -6,9 +6,13 @@ import datetime
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from firebase_admin import storage
 
 cred = credentials.Certificate("../memoryboost-79ad5-firebase-adminsdk-b47qp-1f3ed9644c.json")
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'memoryboost-79ad5.appspot.com'
+})
+bucket = storage.bucket()
 db = firestore.client()
 user_ref = db.collection(u'users').document(u'kazuya')
 faces_ref = db.collection(u'users').document(u'kazuya').collection(u'faces')
@@ -32,6 +36,15 @@ class VideoRecognition:
         self.compress_factor = compress_factor
         self.known_face_encodings = []
         self.known_face_names = []
+        self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
+        self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
+        self.video_capture.set(cv2.CAP_PROP_FPS,20)
+        self.width = int(self.video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(self.video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.fps = int(self.video_capture.get(cv2.CAP_PROP_FPS))
+        print(self.width,type(self.width))
+        self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        self.out = cv2.VideoWriter('output.avi', self.fourcc, self.fps, (self.width,  self.height))
     
     def load_faces(self):
         for image in os.listdir("images"):
@@ -53,7 +66,9 @@ class VideoRecognition:
         face_names_firestore = set()
         process_this_frame = True
         now = datetime.datetime.now()
+        frame_count = 0
         while True:
+            frame_count += 1
 
             #firestore every minute
             before_time = now
@@ -76,6 +91,8 @@ class VideoRecognition:
 
             original_frame = frame.copy()
 
+            self.out.write(original_frame)
+
             # Resize frame of video to 1/4 size for faster face recognition processing
             small_frame = cv2.resize(frame, (0, 0), fx=1/self.compress_factor, fy=1/self.compress_factor)
             
@@ -83,7 +100,7 @@ class VideoRecognition:
             rgb_small_frame = small_frame[:, :, ::-1]
 
             # Only process every other frame of video to save time
-            if process_this_frame:
+            if frame_count%20 == 0:
                 # Find all the faces and face encodings in the current frame of video
                 face_locations = face_recognition.face_locations(rgb_small_frame)
                 face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
