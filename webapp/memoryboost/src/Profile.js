@@ -25,7 +25,6 @@ function Profile() {
       receivedTimestamps.push(String(t));
     });
     setTimestamps(receivedTimestamps)
-
   }
 
   useEffect(() => {
