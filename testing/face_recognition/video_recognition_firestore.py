@@ -25,8 +25,6 @@ class VideoRecognition:
         # video
         self.video_capture = cv2.VideoCapture(videocapture)
         self.compress_factor = compress_factor
-        self.known_face_encodings = []
-        self.known_face_names = []
         self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH,1920)
         self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT,1080)
         self.video_capture.set(cv2.CAP_PROP_FPS,20)
@@ -53,6 +51,7 @@ class VideoRecognition:
             self.user_ref.set(self.faces_master)
 
     def load_faces(self):
+        self.known_face_encodings = []
         self.known_face_names = []
         # get list of face_images from storage and download ones not found locally
         face_images_storage = [i.name[len(self.username+"/face_images")+1:] for i in self.bucket.list_blobs(prefix=self.username+"/face_images")]
