@@ -179,4 +179,5 @@ pip-selfcheck.json
 # End of https://www.toptal.com/developers/gitignore/api/virtualenv,python
 
 *.mp4
-memoryboost-79ad5-firebase-adminsdk-b47qp-1f3ed9644c.json
+*.avi
+serviceAccountKey.json
