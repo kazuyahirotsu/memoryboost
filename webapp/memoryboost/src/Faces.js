@@ -70,17 +70,18 @@ function Faces() {
     <div className="Faces">
         <div className='text-center'>
             <p className='text-3xl my-10 text-primary'>known faces</p>
-            {console.log(faceImageUrl)}
             <div className='flex flex-wrap justify-center'>
-                {faceImageUrlRender?.map((nameandurl,idx) => 
+              {faceImageUrlRender?.map((nameandurl,idx) => 
                 <div className='card w-60 mx-2 my-2 bg-base-300' key={idx}>
-                  <Link className="" to={"/"+nameandurl[0]}><figure><img src={nameandurl[1]} /></figure></Link>
+                  <Link className="" to={"/"+nameandurl[0]}><figure><img className='object-cover h-36 w-96' src={nameandurl[1]} /></figure></Link>
                   <div className='card-body'>
-                  <Link className="btn btn-primary text-xl" to={"/"+nameandurl[0]}>{nameandurl[0]}</Link>
-                  <p>{nameandurl[2]}</p>
+                    <Link className="btn btn-primary text-xl" to={"/"+nameandurl[0]}>{nameandurl[0]}</Link>
+                    <div className='card-actions justify-end mt-4'>
+                      <div className='badge badge-secondary text-xl'>{nameandurl[2]}</div>
+                    </div>
                   </div>
                 </div>
-                )}
+              )}
             </div>
         </div>
     </div>
