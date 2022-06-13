@@ -1,45 +1,59 @@
 import React, {useState, useEffect} from 'react'
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { firebaseConfig } from './firebaseConfig';
 import { Link } from "react-router-dom";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-// const analytics = getAnalytics(app);
 
 
 function Faces() {
-  const [faces, setFaces] = useState();
 
-  // get known face list from firestore
-  const getFaces = async() => {
-    const docRef = doc(db, "users", "kazuya"); //just for kazuya now
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-      setFaces(docSnap.data().faces_master)
-    } else {
-      console.log("No such document!");
-    }
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+  // const analytics = getAnalytics(app);\
+
+  const [faceImageUrl, setFaceImageUrl] = useState([]);
+
+  const getFaceImages = async() => {
+    // Create a reference under which you want to list
+    const listRef = ref(storage, 'kazuya/face_images');
+
+    setFaceImageUrl([]);
+
+    // Find all the prefixes and items.
+    listAll(listRef)
+      .then((res) => {
+        res.items.forEach((itemRef) => {
+          // All the items under listRef.
+          getDownloadURL(ref(storage, itemRef._location.path_))
+          .then((url) => {
+            setFaceImageUrl(arr => [...arr, [itemRef._location.path_, url]]);
+          });
+        });
+      }).catch((error) => {
+        // Uh-oh, an error occurred!
+        console.log(error);
+      });
   }
 
   useEffect(() => {
-    getFaces();
+    getFaceImages();
   },[])
 
   return (
     <div className="Faces">
         <div className='text-center'>
-            <p className='text-3xl my-5 text-primary'>known faces</p>
-            <p>{console.log(faces)}</p>
-            <div className='flex flex-col items-center'>
-                {faces?.map((face,idx) => 
-                <button className="btn w-1/6 my-1" key={idx}>
-                  <Link className="link" to={"/"+face} >{face}</Link>
-                </button>
+            <p className='text-3xl my-10 text-primary'>known faces</p>
+            <div className='flex flex-wrap justify-center'>
+                {faceImageUrl?.map((nameandurl,idx) => 
+                <div className='card w-60 mx-2 my-2 bg-base-300'>
+                  <Link className="" to={"/"+nameandurl[0].slice(19,-4)}><figure><img src={nameandurl[1]} /></figure></Link>
+                  <div className='card-body'>
+                  <Link className="btn btn-primary text-xl" to={"/"+nameandurl[0].slice(19,-4)}>{nameandurl[0].slice(19,-4)}</Link>
+                  </div>
+                </div>
                 )}
             </div>
         </div>
