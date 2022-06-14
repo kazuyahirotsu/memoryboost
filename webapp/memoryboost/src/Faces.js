@@ -69,7 +69,7 @@ function Faces() {
   return (
     <div className="Faces">
         <div className='text-center'>
-            <p className='text-3xl my-10 text-primary'>known faces</p>
+            <p className='text-3xl my-10 text-primary'>faces</p>
             <div className='flex flex-wrap justify-center'>
               {faceImageUrlRender?.map((nameandurl,idx) => 
                 <div className='card w-60 mx-2 my-2 bg-base-300' key={idx}>
