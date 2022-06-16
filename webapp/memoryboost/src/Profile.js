@@ -16,6 +16,8 @@ function Profile() {
   const {id} = useParams();
   const [timestamps, setTimestamps] = useState();
   const [profile, setProfile] = useState("");
+  const [profileDB, setProfileDB] = useState("");
+  const [saveColor, setSaveColor] = useState("")
 
   // get timestamp of the face recognition from firestore
   const getFaceTimes = async() => {
@@ -42,6 +44,7 @@ function Profile() {
       console.error(err);
       // alert(err.message);
     }
+    setProfileDB(newProfile);
   }
 
   const getProfile = async () => {
@@ -49,12 +52,26 @@ function Profile() {
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
     setProfile(data.profile);
+    setProfileDB(data.profile);
+  }
+
+  const checkProfile = async () => {
+    if(profile == profileDB){
+      setSaveColor("");
+    }else{
+      setSaveColor("btn-secondary");
+    }
   }
 
   useEffect(() => {
     getProfile();
     getFaceTimes();
   },[])
+
+  useEffect(() => {
+    console.log("check")
+    checkProfile();
+  }, [profile])
 
   return (
     <div>
@@ -72,7 +89,7 @@ function Profile() {
                     placeholder={profile}
                     onChange={async (e) => setProfile(e.target.value)}
                   />
-                  <button className="btn w-1/6 hover:text-secondary hover:bg-neutral" onClick={async () => {updateProfile(profile)}}>Save</button>
+                  <button className={"btn w-1/6 "+saveColor} onClick={async () => {updateProfile(profile)}}>Save</button>
                 </div>
               </div>
             </div>
