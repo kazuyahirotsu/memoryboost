@@ -21,6 +21,7 @@ function Profile() {
 
   // get timestamp of the face recognition from firestore
   const getFaceTimes = async() => {
+    console.log("getting the timestamps of the appearance");
     let receivedTimestamps = []
     const q = query(collection(db, "users", "kazuya", "faces"), where("faces", "array-contains", id));
     const querySnapshot = await getDocs(q);
@@ -32,6 +33,7 @@ function Profile() {
   }
 
   const updateProfile = async(newProfile) => {
+    console.log("updating the profile");
     try{
       const docRef = doc(db, "users", "kazuya", "profiles", id);
       await updateDoc(docRef, {
@@ -48,6 +50,7 @@ function Profile() {
   }
 
   const getProfile = async () => {
+    console.log("getting the profile");
     const docRef = doc(db, "users", "kazuya", "profiles", id);
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
@@ -56,6 +59,7 @@ function Profile() {
   }
 
   const checkProfile = async () => {
+    console.log("checking the profile change");
     if(profile == profileDB){
       setSaveColor("");
     }else{
@@ -69,7 +73,6 @@ function Profile() {
   },[])
 
   useEffect(() => {
-    console.log("check")
     checkProfile();
   }, [profile])
 

@@ -21,6 +21,7 @@ function Faces() {
 
   // get timestamp of the face recognition from firestore
   const getFaceTimes = async(id) => {
+    console.log("getting how many times "+id+" has appeared");
     let receivedTimestamps = []
     const q = query(collection(db, "users", "kazuya", "faces"), where("faces", "array-contains", id));
     const querySnapshot = await getDocs(q);
@@ -33,6 +34,7 @@ function Faces() {
   }
 
   const getFaceImages = async() => {
+    console.log("getting face images");
     // Create a reference under which you want to list
     const listRef = ref(storage, 'kazuya/face_images');
 
@@ -64,6 +66,7 @@ function Faces() {
 
   useEffect(() => {
     setFaceImageUrlRender(faceImageUrl.slice().sort((a,b) => {return(b[2] - a[2])}));
+    // fix this to sort only after all the faces are loaded
   },[faceImageUrl])
 
   return (
