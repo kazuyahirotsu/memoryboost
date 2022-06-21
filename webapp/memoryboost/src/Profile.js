@@ -87,7 +87,6 @@ function Profile() {
                 <p className="card-title text-secondary">Profile</p>
                 <div className="flex flex-col items-center">
                   <TextareaAutosize
-                    // type="textarea"
                     className="input w-11/12 my-4"
                     value={profile}
                     placeholder={profile}
@@ -98,11 +97,18 @@ function Profile() {
               </div>
             </div>
 
-            <div className='flex flex-col items-center'>
-                {appearedVideos?.map((videos,idx) => 
-                <p key={idx}>{videos}</p>
-                )}
+            <div className="card bg-neutral-focus shadow-xl mb-5 w-3/4">
+              <div className="card-body">
+                <p className="card-title text-secondary">Videos</p>
+                <div className='flex flex-col items-center'>
+                  {appearedVideos?.map((videos,idx) => 
+                  <p key={idx}>{videos}</p>
+                  )}
+                </div>
+              </div>
             </div>
+
+
         </div>
     </div>
   );
