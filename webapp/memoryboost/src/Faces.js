@@ -2,9 +2,10 @@ import React, {useState, useEffect} from 'react'
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
-import { getFirestore, getDocs, collection, query, where } from "firebase/firestore";
+import { getFirestore, getDoc, doc, collection, query, where } from "firebase/firestore";
 import { firebaseConfig } from './firebaseConfig';
 import { Link } from "react-router-dom";
+import Menu from "./Menu";
 
 
 
@@ -22,15 +23,12 @@ function Faces() {
   // get timestamp of the face recognition from firestore
   const getFaceTimes = async(id) => {
     console.log("getting how many times "+id+" has appeared");
-    let receivedTimestamps = []
-    const q = query(collection(db, "users", "kazuya", "faces"), where("faces", "array-contains", id));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const t = new Date(doc.data().time.seconds*1000+doc.data().time.nanoseconds/1000000)
-      receivedTimestamps.push(String(t));
-    });
 
-    return receivedTimestamps.length
+    const appearedVideosRef = doc(db, "users", "kazuya", "profiles", id);
+    const docSnap = await getDoc(appearedVideosRef);
+    const appearedVideos = docSnap.data().videos
+
+    return appearedVideos.length
   }
 
   const getFaceImages = async() => {
@@ -71,22 +69,22 @@ function Faces() {
 
   return (
     <div className="Faces">
-        <div className='text-center'>
-            <p className='text-3xl my-10 text-primary'>faces</p>
-            <div className='flex flex-wrap justify-center'>
-              {faceImageUrlRender?.map((nameandurl,idx) => 
-                <div className='card w-60 mx-2 my-2 bg-base-300' key={idx}>
-                  <Link className="" to={"/"+nameandurl[0]}><figure><img className='object-cover h-36 w-96' src={nameandurl[1]} /></figure></Link>
-                  <div className='card-body'>
-                    <Link className="btn btn-primary text-xl" to={"/"+nameandurl[0]}>{nameandurl[0]}</Link>
-                    <div className='card-actions justify-end mt-4'>
-                      <div className='badge badge-secondary text-xl'>{nameandurl[2]}</div>
-                    </div>
+      <Menu page="faces" />
+      <div className='text-center'>
+          <div className='flex flex-wrap justify-center my-10'>
+            {faceImageUrlRender?.map((nameandurl,idx) => 
+              <div className='card w-60 mx-2 my-2 bg-base-300' key={idx}>
+                <Link className="" to={"/"+nameandurl[0]}><figure><img className='object-cover h-36 w-96' src={nameandurl[1]} /></figure></Link>
+                <div className='card-body'>
+                  <Link className="btn btn-primary text-xl" to={"/"+nameandurl[0]}>{nameandurl[0]}</Link>
+                  <div className='card-actions justify-end mt-4'>
+                    <div className='badge badge-secondary text-xl'>{nameandurl[2]}</div>
                   </div>
                 </div>
-              )}
-            </div>
-        </div>
+              </div>
+            )}
+          </div>
+      </div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { getFirestore, getDocs, collection, query, where, doc, updateDoc, setDoc
 import { firebaseConfig } from './firebaseConfig';
 import { useParams } from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize';
+import Menu from "./Menu";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -14,22 +15,19 @@ const db = getFirestore(app);
 
 function Profile() {
   const {id} = useParams();
-  const [timestamps, setTimestamps] = useState();
+  const [appearedVideos, setAppearedVideos] = useState();
   const [profile, setProfile] = useState("");
   const [profileDB, setProfileDB] = useState("");
   const [saveColor, setSaveColor] = useState("")
 
   // get timestamp of the face recognition from firestore
   const getFaceTimes = async() => {
-    console.log("getting the timestamps of the appearance");
-    let receivedTimestamps = []
-    const q = query(collection(db, "users", "kazuya", "faces"), where("faces", "array-contains", id));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      const t = new Date(doc.data().time.seconds*1000+doc.data().time.nanoseconds/1000000)
-      receivedTimestamps.push(String(t));
-    });
-    setTimestamps(receivedTimestamps)
+    console.log("getting the videos of the appearance");
+
+    const appearedVideosRef = doc(db, "users", "kazuya", "profiles", id);
+    const docSnap = await getDoc(appearedVideosRef);
+    const appearedVideosList = docSnap.data().videos
+    setAppearedVideos(appearedVideosList)
   }
 
   const updateProfile = async(newProfile) => {
@@ -42,11 +40,13 @@ function Profile() {
     }catch(err){
       await setDoc(doc(db, "users", "kazuya", "profiles", id), {
         profile: newProfile,
+        videos: [],
       });
       console.error(err);
       // alert(err.message);
     }
     setProfileDB(newProfile);
+    checkProfile();
   }
 
   const getProfile = async () => {
@@ -78,8 +78,9 @@ function Profile() {
 
   return (
     <div>
+      <Menu page="faces" />
         <div className='flex flex-col text-center items-center'>
-            <p className='text-3xl my-5 text-primary'>{id}</p>
+            <p className='text-3xl my-10 text-secondary'>{id}</p>
 
             <div className="card bg-neutral-focus shadow-xl mb-5 w-3/4">
               <div className="card-body">
@@ -98,8 +99,8 @@ function Profile() {
             </div>
 
             <div className='flex flex-col items-center'>
-                {timestamps?.map((time,idx) => 
-                <p key={idx}>{time}</p>
+                {appearedVideos?.map((videos,idx) => 
+                <p key={idx}>{videos}</p>
                 )}
             </div>
         </div>
