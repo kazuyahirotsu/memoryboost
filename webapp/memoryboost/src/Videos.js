@@ -71,7 +71,7 @@ function Videos() {
   }
 
   const checkUploadName = async () => {
-    if(videoList.includes(uploadName)){
+    if(videoList.includes(uploadName+".mp4")){
       setNameExist(true);
       setDisableUploadButton(true);
       console.log("That name already exists");
@@ -93,17 +93,17 @@ function Videos() {
   useEffect(() => {
     checkUploadName();
   },[uploadName, uploadFile])
-  const color = "#e5e7eb";
+  const color = "#A6ADBA";
 
   return (
     <div className="Videos">
       <Menu page="Videos" />
-      <div className='flex flex-col text-center items-center'>
+      <div className='flex flex-col text-center items-center mt-20'>
         <div className='card mx-2 my-2 w-3/4 bg-neutral-focus'>
           <div className='card-body flex flex-col'>
             <p className='card-title text-secondary'>Add New Video</p>
             
-            <p className='text-accent mt-5'>Choose file</p>
+            <p className='text-accent mt-5'>Choose the video</p>
             <input className="file:btn" type="file" accept=".mp4" onChange={(e)=>{setUploadFile(e.target.files[0])}}/>
             
             <p className='text-accent mt-5'>What's the title?</p>
@@ -115,10 +115,10 @@ function Videos() {
                   onChange={async (e) => setUploadName(e.target.value)}
             />
             {nameExist &&
-              <div class="alert alert-error shadow-lg">
+              <div className="alert alert-error shadow-lg">
                 <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <p className=''>That name already exists. Pick different name.</p>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <p className=''>That title already exists. Pick different one.</p>
                 </div>
               </div>
             }
@@ -132,7 +132,7 @@ function Videos() {
                         svg: { color },
                         input: { color },
                         label: { color },
-                        border: '1px solid #e5e7eb',
+                        border: '1px solid #A6ADBA',
                         borderRadius: 1
                       }}
                     />

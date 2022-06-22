@@ -79,7 +79,7 @@ function Profile() {
   return (
     <div>
       <Menu page="faces" />
-      <div className='flex flex-col text-center items-center'>
+      <div className='flex flex-col text-center items-center mt-10'>
           <p className='text-3xl my-10 text-secondary'>{id}</p>
 
           <div className="card bg-neutral-focus shadow-xl mb-5 w-3/4">
