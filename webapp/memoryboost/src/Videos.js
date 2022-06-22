@@ -99,10 +99,10 @@ function Videos() {
     <div className="Videos">
       <Menu page="Videos" />
       <div className='flex flex-col text-center items-center mt-20'>
-        <div className='card mx-2 my-2 w-3/4 bg-neutral-focus'>
-          <div className='card-body flex flex-col'>
-            <p className='card-title text-secondary'>Add New Video</p>
-            
+        <div tabindex="0" className="collapse collapse-plus bg-neutral-focus rounded-box mb-1 w-3/4">
+          <input type="checkbox" className="peer" /> 
+          <p className='collapse-title text-secondary text-xl text-left font-semibold'>Add New Video</p>
+          <div className='collapse-content flex flex-col'>
             <p className='text-accent mt-5'>Choose the video</p>
             <input className="file:btn" type="file" accept=".mp4" onChange={(e)=>{setUploadFile(e.target.files[0])}}/>
             
@@ -133,7 +133,7 @@ function Videos() {
                         input: { color },
                         label: { color },
                         border: '1px solid #A6ADBA',
-                        borderRadius: 1
+                        borderRadius: 2
                       }}
                     />
                   );
@@ -144,15 +144,15 @@ function Videos() {
                 }}
               />
             </LocalizationProvider>
-          </div>
-          <div className="card-actions justify-end">
-            <p>{uploading}</p>
-            <button 
-              className="btn"
-              onClick={async () => {
-              uploadItem(uploadFile);}}
-              disabled={disableUploadButton}>
-                Upload</button>
+            <div className="card-actions justify-end mt-5">
+              <p>{uploading}</p>
+              <button 
+                className="btn"
+                onClick={async () => {
+                uploadItem(uploadFile);}}
+                disabled={disableUploadButton}>
+                  Upload</button>
+            </div>
           </div>
         </div>
 

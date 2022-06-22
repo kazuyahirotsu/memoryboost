@@ -115,11 +115,12 @@ function Faces() {
   return (
     <div className="Faces">
       <Menu page="faces" />
-      <div className='flex flex-col text-center items-center mt-20'>
 
-        <div className='card mx-2 my-2 w-3/4 bg-neutral-focus'>
-          <div className='card-body flex flex-col'>
-            <p className='card-title text-secondary'>Add New Face</p>
+      <div className='flex flex-col text-center items-center mt-20'>
+        <div tabindex="0" className="collapse collapse-plus bg-neutral-focus rounded-box mb-1 w-3/4">
+          <input type="checkbox" className="peer" /> 
+          <p className='collapse-title text-secondary text-xl text-left font-semibold'>Add New Face</p>
+          <div className='collapse-content flex flex-col'>
             
             <p className='text-accent mt-5'>Choose file</p>
             <input className="file:btn" type="file" accept=".jpg, .png" onChange={(e)=>{setUploadFile(e.target.files[0])}}/>
@@ -139,16 +140,16 @@ function Faces() {
                   <p className=''>That name already exists. Pick different one.</p>
                 </div>
               </div>
-            }
-          </div>
-          <div className="card-actions justify-end">
-            <p>{uploading}</p>
-            <button 
-              className="btn"
-              onClick={async () => {
-              uploadItem(uploadFile);}}
-              disabled={disableUploadButton}>
-                Upload</button>
+            }       
+            <div className="card-actions justify-end mt-5">
+              <p>{uploading}</p>
+              <button 
+                className="btn"
+                onClick={async () => {
+                uploadItem(uploadFile);}}
+                disabled={disableUploadButton}>
+                  Upload</button>
+            </div>
           </div>
         </div>
 
