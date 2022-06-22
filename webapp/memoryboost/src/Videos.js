@@ -17,10 +17,38 @@ function Videos() {
   const storage = getStorage(app);
   // const analytics = getAnalytics(app);\
 
+  const [videoList, setVideoList] = useState([]);
+  
+  const getVideoList = async() => {
+    console.log("getting video list");
+    // Create a reference under which you want to list
+    const listRef = ref(storage, 'kazuya/videos');
+
+    setVideoList([]);
+
+    // Find all the prefixes and items.
+    listAll(listRef)
+      .then((res) => {
+        res.items.forEach((itemRef) => {
+          setVideoList(arr => [...arr, itemRef._location.path_.slice(14,)])
+        });
+      }).catch((error) => {
+        // Uh-oh, an error occurred!
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    getVideoList();
+  },[])
+
   return (
     <div className="Videos">
       <Menu page="Videos" />
       <div className='text-center'>
+        {videoList?.map((videoname,idx) => 
+          <p key={idx}>{videoname}</p>
+        )}
       </div>
     </div>
   );
