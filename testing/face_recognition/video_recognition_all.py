@@ -23,7 +23,7 @@ class VideoRecognition:
         self.user_ref = self.db.collection(u'users').document(self.username)
         self.faces_ref = self.db.collection(u'users').document(self.username).collection(u'faces')
 
-        # video setting
+        # download the specified video
         videos_local = [i for i in os.listdir("videos")]
         if self.videoname not in videos_local:
             self.download_blob(self.username+"/videos/"+self.videoname,"videos/"+self.videoname)
@@ -46,7 +46,7 @@ class VideoRecognition:
         # learn faces
         for image in os.listdir("images"):
             name = image.split(".")[0]
-            print(name)
+            print("loading this face: ", name)
             try:
                 exec('{}_image = face_recognition.load_image_file("images/{}")'.format(name, image))
                 exec('{}_face_encoding = face_recognition.face_encodings({}_image)[0]'.format(name, name))
@@ -139,15 +139,11 @@ class VideoRecognition:
         
             appeared_videos_ref = self.db.collection(u'users').document(self.username).collection(u'profiles').document(face)
             doc = appeared_videos_ref.get()
-            print(doc)
             if doc.to_dict()["videos"] is None:
                 new_appeared_videos = [self.videoname]
             else:
-                print(doc.to_dict()["videos"])
-                print(type(doc.to_dict()["videos"]))
                 new_appeared_videos = doc.to_dict()["videos"]
                 new_appeared_videos.append(self.videoname)
-            print(new_appeared_videos)
             appeared_videos_ref.update({u'videos':new_appeared_videos})
 
         videos_faces_ref.set({u'faces': [str(key) for key in face_names_firestore.keys()]})
