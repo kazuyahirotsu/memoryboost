@@ -69,6 +69,8 @@ class VideoRecognition:
 
             # Grab a single frame of video
             ret, frame = self.video_capture.read()
+            if not ret:
+                break
 
             original_frame = frame.copy()
 
@@ -97,6 +99,10 @@ class VideoRecognition:
                         name = self.known_face_names[best_match_index]
 
                     face_names.append(name)
+            
+            # make thumbnail
+            if frame_count == 1:
+                self.make_thumbnail(original_frame)
 
             # firestore
             # stores the first timestamp of the appearance
@@ -145,13 +151,11 @@ class VideoRecognition:
                 new_appeared_videos = doc.to_dict()["videos"]
                 new_appeared_videos.append(self.videoname)
             appeared_videos_ref.update({u'videos':new_appeared_videos})
+        videos_faces_ref.update({
+            u'faces': [str(key) for key in face_names_firestore.keys()],
+            u'thumbnail_url': "{}/thumbnails/{}_thumbnail.jpg".format(self.username,self.videoname[:-4]),
+            u'video_url': "{}/videos/{}".format(self.username,self.videoname)})
 
-        videos_faces_ref.set({u'faces': [str(key) for key in face_names_firestore.keys()]})
-
-
-
-        
-    
     def stop(self):
         # Release handle to the webcam
         self.video_capture.release()
@@ -170,11 +174,17 @@ class VideoRecognition:
             self.upload_blob("images/"+name+".jpg", self.username+"/face_images/"+name+".jpg")
             cv2.destroyWindow('learning new face')
             self.load_faces()
+    
+    def make_thumbnail(self, img):
+        cv2.imshow('making thumbnail', img)
+        cv2.waitKey(1)
+        cv2.imwrite("thumbnails/{}_thumbnail.jpg".format(self.videoname[:-4]), img)
+        self.upload_blob("thumbnails/"+self.videoname[:-4]+"_thumbnail.jpg", self.username+"/thumbnails/"+self.videoname[:-4]+"_thumbnail.jpg")
+        cv2.destroyWindow('making thumbnail')
 
     def download_blob(self, source_blob_name, destination_file_name):
         blob = self.bucket.blob(source_blob_name)
         blob.download_to_filename(destination_file_name)
-
         print(
             "Downloaded storage object {} to local file {}.".format(
                 source_blob_name, destination_file_name
@@ -193,7 +203,7 @@ class VideoRecognition:
     
 
 def main():
-    videoRecognition = VideoRecognition(4, "kazuya", "linus_moving.mp4")
+    videoRecognition = VideoRecognition(4, "kazuya", "clip.mp4")
     videoRecognition.load_faces()
     videoRecognition.process(display=True)
     videoRecognition.stop()
