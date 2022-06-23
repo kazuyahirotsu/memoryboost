@@ -41,8 +41,11 @@ function Videos() {
         res.items.forEach((itemRef) => {
           // All the items under listRef.
           getDownloadURL(ref(storage, "kazuya/thumbnails/"+itemRef._location.path_.slice(14,-4)+"_thumbnail.jpg"))
-          .then((url) => {
-            setVideoList(arr => [...arr, [itemRef._location.path_.slice(14,), url]])       
+          .then((thumbnail_url) => {
+            getDownloadURL(ref(storage, "kazuya/videos/"+itemRef._location.path_.slice(14,)))
+            .then((video_url) => {
+              setVideoList(arr => [...arr, [itemRef._location.path_.slice(14,), thumbnail_url, video_url]])       
+            });   
           });
         });
       }).catch((error) => {
@@ -168,9 +171,9 @@ function Videos() {
             <p className="card-title text-secondary">Videos</p>
             <div className='flex flex-col items-center'>
               {videoList?.map((nameandthumbnail,idx) => 
-              <div>
-              <p key={idx}>{nameandthumbnail[0]}</p>
-              <figure><img className='object-cover h-48 w-96' src={nameandthumbnail[1]} /></figure>
+              <div key={idx}>
+              <p>{nameandthumbnail[0]}</p>
+              <figure><a href={nameandthumbnail[2]}><img className='object-cover h-48 w-96' src={nameandthumbnail[1]} /></a></figure>
               </div>
               )}
             </div>

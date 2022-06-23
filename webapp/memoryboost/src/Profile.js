@@ -32,8 +32,11 @@ function Profile() {
     appearedVideosList.forEach((video) => {
       // All the items under listRef.
       getDownloadURL(ref(storage, "kazuya/thumbnails/"+video.slice(0,-4)+"_thumbnail.jpg"))
-      .then((url) => {
-        setAppearedVideos(arr => [...arr, [video, url]])       
+      .then((thumbnail_url) => {
+        getDownloadURL(ref(storage, "kazuya/videos/"+video))
+        .then((video_url) => {
+          setAppearedVideos(arr => [...arr, [video, thumbnail_url, video_url]])     
+        });        
       });
     });
   }
@@ -112,7 +115,7 @@ function Profile() {
                 {appearedVideos?.map((nameandthumbnail,idx) => 
                 <div key={idx}>
                 <p>{nameandthumbnail[0]}</p>
-                <figure><img className='object-cover h-48 w-96' src={nameandthumbnail[1]}/></figure>
+                <figure><a href={nameandthumbnail[2]}><img className='object-cover h-48 w-96' src={nameandthumbnail[1]} /></a></figure>
                 </div>
                 )}
               </div>
