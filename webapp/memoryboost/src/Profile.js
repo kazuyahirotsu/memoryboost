@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getFirestore, doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
+import { getStorage, ref, listAll, getDownloadURL, uploadBytes } from "firebase/storage";
 import { firebaseConfig } from './firebaseConfig';
 import { useParams } from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize';
@@ -10,12 +11,13 @@ import Menu from "./Menu";
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 // const analytics = getAnalytics(app);
 
 
 function Profile() {
   const {id} = useParams();
-  const [appearedVideos, setAppearedVideos] = useState();
+  const [appearedVideos, setAppearedVideos] = useState([]);
   const [profile, setProfile] = useState("");
   const [profileDB, setProfileDB] = useState("");
   const [saveColor, setSaveColor] = useState("")
@@ -27,7 +29,13 @@ function Profile() {
     const appearedVideosRef = doc(db, "users", "kazuya", "profiles", id);
     const docSnap = await getDoc(appearedVideosRef);
     const appearedVideosList = docSnap.data().videos
-    setAppearedVideos(appearedVideosList)
+    appearedVideosList.forEach((video) => {
+      // All the items under listRef.
+      getDownloadURL(ref(storage, "kazuya/thumbnails/"+video.slice(0,-4)+"_thumbnail.jpg"))
+      .then((url) => {
+        setAppearedVideos(arr => [...arr, [video, url]])       
+      });
+    });
   }
 
   const updateProfile = async(newProfile) => {
@@ -101,8 +109,11 @@ function Profile() {
             <div className="card-body">
               <p className="card-title text-secondary">Videos</p>
               <div className='flex flex-col items-center'>
-                {appearedVideos?.map((videos,idx) => 
-                <p key={idx}>{videos}</p>
+                {appearedVideos?.map((nameandthumbnail,idx) => 
+                <div key={idx}>
+                <p>{nameandthumbnail[0]}</p>
+                <figure><img className='object-cover h-48 w-96' src={nameandthumbnail[1]}/></figure>
+                </div>
                 )}
               </div>
             </div>

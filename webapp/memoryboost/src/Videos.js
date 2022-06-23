@@ -39,7 +39,11 @@ function Videos() {
     listAll(listRef)
       .then((res) => {
         res.items.forEach((itemRef) => {
-          setVideoList(arr => [...arr, itemRef._location.path_.slice(14,)])
+          // All the items under listRef.
+          getDownloadURL(ref(storage, "kazuya/thumbnails/"+itemRef._location.path_.slice(14,-4)+"_thumbnail.jpg"))
+          .then((url) => {
+            setVideoList(arr => [...arr, [itemRef._location.path_.slice(14,), url]])       
+          });
         });
       }).catch((error) => {
         // Uh-oh, an error occurred!
@@ -98,6 +102,8 @@ function Videos() {
   return (
     <div className="Videos">
       <Menu page="Videos" />
+
+      {/* Add New Video */}
       <div className='flex flex-col text-center items-center mt-20'>
         <div tabindex="0" className="collapse collapse-plus bg-neutral-focus rounded-box mb-1 w-3/4">
           <input type="checkbox" className="peer" /> 
@@ -155,13 +161,17 @@ function Videos() {
             </div>
           </div>
         </div>
-
+        
+        {/* Show Videos */}
         <div className="card bg-neutral-focus shadow-xl mb-5 w-3/4">
           <div className="card-body">
             <p className="card-title text-secondary">Videos</p>
             <div className='flex flex-col items-center'>
-              {videoList?.map((videoname,idx) => 
-              <p key={idx}>{videoname}</p>
+              {videoList?.map((nameandthumbnail,idx) => 
+              <div>
+              <p key={idx}>{nameandthumbnail[0]}</p>
+              <figure><img className='object-cover h-48 w-96' src={nameandthumbnail[1]} /></figure>
+              </div>
               )}
             </div>
           </div>

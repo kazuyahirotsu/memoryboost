@@ -203,7 +203,7 @@ class VideoRecognition:
     
 
 def main():
-    videoRecognition = VideoRecognition(4, "kazuya", "clip.mp4")
+    videoRecognition = VideoRecognition(4, "kazuya", "linus_moving.mp4")
     videoRecognition.load_faces()
     videoRecognition.process(display=True)
     videoRecognition.stop()
