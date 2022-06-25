@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getStorage, ref, listAll, getDownloadURL, uploadBytes } from "firebase/storage";
-import { getFirestore, getDoc, doc, setDoc } from "firebase/firestore";
+import { collection, getFirestore, getDocs, doc, setDoc } from "firebase/firestore";
 import { firebaseConfig } from './firebaseConfig';
 import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -31,27 +31,21 @@ function Videos() {
   const getVideoList = async() => {
     console.log("getting video list");
     // Create a reference under which you want to list
-    const listRef = ref(storage, 'kazuya/videos');
 
     setVideoList([]);
 
-    // Find all the prefixes and items.
-    listAll(listRef)
-      .then((res) => {
-        res.items.forEach((itemRef) => {
-          // All the items under listRef.
-          getDownloadURL(ref(storage, "kazuya/thumbnails/"+itemRef._location.path_.slice(14,-4)+"_thumbnail.jpg"))
-          .then((thumbnail_url) => {
-            getDownloadURL(ref(storage, "kazuya/videos/"+itemRef._location.path_.slice(14,)))
-            .then((video_url) => {
-              setVideoList(arr => [...arr, [itemRef._location.path_.slice(14,), thumbnail_url, video_url]])       
-            });   
-          });
-        });
-      }).catch((error) => {
-        // Uh-oh, an error occurred!
-        console.log(error);
+    const videoData = await getDocs(collection(db, "users", "kazuya", "videos"));
+    videoData.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      const t = new Date(doc.data().date.seconds*1000+doc.data().date.nanoseconds/1000000)
+      getDownloadURL(ref(storage, doc.data().thumbnail_url))
+      .then((thumbnail_url) => {
+        getDownloadURL(ref(storage, doc.data().video_url))
+        .then((video_url) => {
+          setVideoList(arr => [...arr, [doc.id, thumbnail_url, video_url, doc.data().text, doc.data().faces, String(t)]]) 
+        });   
       });
+    });
   }
 
   const uploadItem = async (item) => {
@@ -108,7 +102,7 @@ function Videos() {
 
       {/* Add New Video */}
       <div className='flex flex-col text-center items-center mt-20'>
-        <div tabindex="0" className="collapse collapse-plus bg-neutral-focus rounded-box mb-1 w-3/4">
+        <div tabIndex="0" className="collapse collapse-plus bg-neutral-focus rounded-box mb-1 w-3/4">
           <input type="checkbox" className="peer" /> 
           <p className='collapse-title text-secondary text-xl text-left font-semibold'>Add New Video</p>
           <div className='collapse-content flex flex-col'>
@@ -171,9 +165,19 @@ function Videos() {
             <p className="card-title text-secondary">Videos</p>
             <div className='flex flex-col items-center'>
               {videoList?.map((nameandthumbnail,idx) => 
-              <div key={idx}>
-              <p>{nameandthumbnail[0]}</p>
-              <figure><a href={nameandthumbnail[2]}><img className='object-cover h-48 w-96' src={nameandthumbnail[1]} /></a></figure>
+              <div key={idx} className='flex my-2'>
+                <a href={nameandthumbnail[2]} className='w-1/2 mx-1'><img className='' src={nameandthumbnail[1]} /></a>
+
+                <div className='w-1/2 flex flex-col mx-1'>
+                  <p className='my-1'>{nameandthumbnail[0]}</p>
+                  <p className='my-1'>{nameandthumbnail[5]}</p>
+                  <div className='my-1'>
+                    {nameandthumbnail[4].map((face,idx2) => 
+                      <p key={idx2} className='badge badge-primary w-24 mx-1'>{face}</p>
+                    )}
+                  </div>
+                  <textarea className='my-1 textarea textarea-primary textarea-ghost focus:outline-0 focus:bg-transparent' readOnly={true} value={nameandthumbnail[3]}></textarea>
+                </div>
               </div>
               )}
             </div>
