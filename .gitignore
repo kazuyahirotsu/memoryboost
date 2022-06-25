@@ -181,3 +181,7 @@ pip-selfcheck.json
 *.mp4
 *.avi
 serviceAccountKey.json
+*.gz
+*.pbmm
+*.scorer
+*.DS_Store

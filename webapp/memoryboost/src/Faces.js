@@ -117,7 +117,7 @@ function Faces() {
       <Menu page="faces" />
 
       <div className='flex flex-col text-center items-center mt-20'>
-        <div tabindex="0" className="collapse collapse-plus bg-neutral-focus rounded-box mb-1 w-3/4">
+        <div tabIndex="0" className="collapse collapse-plus bg-neutral-focus rounded-box mb-1 w-3/4">
           <input type="checkbox" className="peer" /> 
           <p className='collapse-title text-secondary text-xl text-left font-semibold'>Add New Face</p>
           <div className='collapse-content flex flex-col'>

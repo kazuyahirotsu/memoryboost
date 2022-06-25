@@ -7,8 +7,10 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import storage
+import moviepy.editor as mp
+import deepspeech_local
 
-
+# run this script after the video is uploaded through website
 class VideoRecognition:
     def __init__(self, compress_factor, username, videoname):
         # firebase
@@ -101,7 +103,7 @@ class VideoRecognition:
                     face_names.append(name)
             
             # make thumbnail
-            if frame_count == 1:
+            if frame_count == 100:
                 self.make_thumbnail(original_frame)
 
             # firestore
@@ -200,13 +202,24 @@ class VideoRecognition:
             f"File {source_file_name} uploaded to {destination_blob_name}."
         )
     
+    def convert_video_to_audio(self):
+        my_clip = mp.VideoFileClip("videos/"+self.videoname)
+        my_clip.audio.write_audiofile("audio/"+self.videoname[:-4]+".wav", fps=16000, ffmpeg_params=["-ac", "1"])
     
+    def speech2text(self):
+        text = deepspeech_local.main(model_arg="deepspeech-0.9.3-models.pbmm",scorer_arg="deepspeech-0.9.3-models.scorer",audio_arg="audio/"+self.videoname[:-4]+".wav")
+        videos_faces_ref = self.db.collection(u'users').document(self.username).collection(u'videos').document(self.videoname)
+        videos_faces_ref.update({u'text': text})
+
+        
 
 def main():
-    videoRecognition = VideoRecognition(4, "kazuya", "linus_moving.mp4")
+    videoRecognition = VideoRecognition(2, "kazuya", "lmg.mp4")
     videoRecognition.load_faces()
     videoRecognition.process(display=True)
     videoRecognition.stop()
+    videoRecognition.convert_video_to_audio()
+    videoRecognition.speech2text()
 
 if __name__ == "__main__":
     main()
