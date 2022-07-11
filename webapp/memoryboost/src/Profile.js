@@ -38,7 +38,7 @@ function Profile() {
       .then((thumbnail_url) => {
         getDownloadURL(ref(storage, doc.data().video_url))
         .then((video_url) => {
-          setAppearedVideos(arr => [...arr, [doc.id, thumbnail_url, video_url, doc.data().text, doc.data().faces, String(t)]]) 
+          setAppearedVideos(arr => [...arr, [doc.id, thumbnail_url, video_url, doc.data().summarized_text, doc.data().faces, String(t)]]) 
         });   
       });
     });
@@ -127,7 +127,7 @@ function Profile() {
                         <p key={idx2} className='badge badge-primary w-24 mx-1'>{face}</p>
                       )}
                     </div>
-                    <textarea className='my-1 textarea textarea-primary textarea-ghost focus:outline-0 focus:bg-transparent' readOnly={true} value={nameandthumbnail[3]}></textarea>
+                    <textarea className='my-1 textarea textarea-primary textarea-ghost focus:outline-0 focus:bg-transparent h-32' readOnly={true} value={nameandthumbnail[3]}></textarea>
                   </div>
                 </div>
                 )}
