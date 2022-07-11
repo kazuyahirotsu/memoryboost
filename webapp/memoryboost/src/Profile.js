@@ -9,14 +9,15 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { Link } from "react-router-dom";
 import Menu from "./Menu";
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
-// const analytics = getAnalytics(app);
-
 
 function Profile() {
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+  // const analytics = getAnalytics(app);
+
   const {id} = useParams();
   const [appearedVideos, setAppearedVideos] = useState([]);
   const [profile, setProfile] = useState("");
