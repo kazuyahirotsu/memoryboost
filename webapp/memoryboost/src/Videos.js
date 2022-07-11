@@ -60,6 +60,7 @@ function Videos() {
         await setDoc(doc(db, "users", "kazuya", "videos", `${uploadName}${item.name.slice(-4,)}`), {
           faces: [],
           text: "",
+          summarized_text: "",
           thumbnail_url: "",
           video_url: "",
           date: date,

@@ -9,6 +9,7 @@ from firebase_admin import firestore
 from firebase_admin import storage
 import moviepy.editor as mp
 import deepspeech_local
+from transformers import pipeline
 
 # run this script after the video is uploaded through website
 class VideoRecognition:
@@ -208,13 +209,21 @@ class VideoRecognition:
     
     def speech2text(self):
         text = deepspeech_local.main(model_arg="deepspeech-0.9.3-models.pbmm",scorer_arg="deepspeech-0.9.3-models.scorer",audio_arg="audio/"+self.videoname[:-4]+".wav")
+        summarized_text = self.text_summarization(text)
         videos_faces_ref = self.db.collection(u'users').document(self.username).collection(u'videos').document(self.videoname)
         videos_faces_ref.update({u'text': text})
+        videos_faces_ref.update({
+            u'text': text,
+            u'summarized_text': summarized_text})
+    
+    def text_summarization(self, text):
+        summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+        return summarizer(text, max_length=130, min_length=30, do_sample=False)
 
         
 
 def main():
-    videoRecognition = VideoRecognition(2, "kazuya", "lmg.mp4")
+    videoRecognition = VideoRecognition(2, "kazuya", "linus_moving.mp4")
     videoRecognition.load_faces()
     videoRecognition.process(display=True)
     videoRecognition.stop()

@@ -24,7 +24,7 @@ function Menu(props) {
   return (
     <div className="navbar bg-base-100">
       <div className='navbar-start'>
-        <Link className="text-3xl" to={"/"}>memoryboost</Link>
+        <Link className="text-3xl" to={"/"}>memoryboost α</Link>
       </div>
       <div className="navbar-center">
         <ul className="menu menu-horizontal p-0">
