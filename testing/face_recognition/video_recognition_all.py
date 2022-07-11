@@ -218,7 +218,7 @@ class VideoRecognition:
     
     def text_summarization(self, text):
         summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-        return summarizer(text, max_length=130, min_length=30, do_sample=False)
+        return summarizer(text[:1024], max_length=130, min_length=30, do_sample=False)
 
         
 

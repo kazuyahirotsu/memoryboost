@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, useParams } from "react-router-
 import Faces from "./Faces";
 import Videos from "./Videos";
 import Profile from "./Profile";
+import Video from "./Video";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route exact path="/" element={<Faces />} />
           <Route exact path="/videos" element={<Videos />} />
           <Route exact path="/:id" element={<Profile id = {useParams()}/>} />
+          <Route exact path="/videos/:id" element={<Video id = {useParams()}/>} />
         </Routes>
       </Router>
     </div>

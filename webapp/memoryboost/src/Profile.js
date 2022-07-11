@@ -6,6 +6,7 @@ import { getStorage, ref, listAll, getDownloadURL, uploadBytes } from "firebase/
 import { firebaseConfig } from './firebaseConfig';
 import { useParams } from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize';
+import { Link } from "react-router-dom";
 import Menu from "./Menu";
 
 // Initialize Firebase
@@ -116,10 +117,10 @@ function Profile() {
               <div className='flex flex-col items-center'>
                 {appearedVideos?.map((nameandthumbnail,idx) => 
                 <div key={idx} className='flex my-2'>
-                  <a href={nameandthumbnail[2]} className='w-1/2 mx-1'><img className='' src={nameandthumbnail[1]} /></a>
+                  <Link className="w-1/2 mx-1" to={"/videos/"+nameandthumbnail[0]}><img className='' src={nameandthumbnail[1]} /></Link>
 
                   <div className='w-1/2 flex flex-col mx-1'>
-                    <p className='my-1'>{nameandthumbnail[0]}</p>
+                    <Link className="my-1" to={"/videos/"+nameandthumbnail[0]}>{nameandthumbnail[0]}</Link>
                     <p className='my-1'>{nameandthumbnail[5]}</p>
                     <div className='my-1'>
                       {nameandthumbnail[4].map((face,idx2) => 

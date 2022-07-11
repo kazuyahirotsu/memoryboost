@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { Link } from "react-router-dom";
 import Menu from "./Menu";
 
 
@@ -42,7 +43,7 @@ function Videos() {
       .then((thumbnail_url) => {
         getDownloadURL(ref(storage, doc.data().video_url))
         .then((video_url) => {
-          setVideoList(arr => [...arr, [doc.id, thumbnail_url, video_url, doc.data().text, doc.data().faces, String(t)]]) 
+          setVideoList(arr => [...arr, [doc.id, thumbnail_url, video_url, doc.data().summarized_text, doc.data().faces, String(t)]]) 
         });   
       });
     });
@@ -167,17 +168,17 @@ function Videos() {
             <div className='flex flex-col items-center'>
               {videoList?.map((nameandthumbnail,idx) => 
               <div key={idx} className='flex my-2'>
-                <a href={nameandthumbnail[2]} className='w-1/2 mx-1'><img className='' src={nameandthumbnail[1]} /></a>
+                <Link className="w-1/2 mx-1" to={"/videos/"+nameandthumbnail[0]}><img className='' src={nameandthumbnail[1]} /></Link>
 
                 <div className='w-1/2 flex flex-col mx-1'>
-                  <p className='my-1'>{nameandthumbnail[0]}</p>
+                  <Link className="my-1" to={"/videos/"+nameandthumbnail[0]}>{nameandthumbnail[0]}</Link>
                   <p className='my-1'>{nameandthumbnail[5]}</p>
                   <div className='my-1'>
                     {nameandthumbnail[4].map((face,idx2) => 
                       <p key={idx2} className='badge badge-primary w-24 mx-1'>{face}</p>
                     )}
                   </div>
-                  <textarea className='my-1 textarea textarea-primary textarea-ghost focus:outline-0 focus:bg-transparent' readOnly={true} value={nameandthumbnail[3]}></textarea>
+                  <textarea className='my-1 textarea textarea-primary textarea-ghost focus:outline-0 focus:bg-transparent h-32' readOnly={true} value={nameandthumbnail[3]}></textarea>
                 </div>
               </div>
               )}
